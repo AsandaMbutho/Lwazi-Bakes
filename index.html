@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lwazi Bakes!</title>
+    <style>
+      /* Your existing CSS remains unchanged */
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f9f0e5;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+      .envelope {
+        width: 300px;
+        height: 200px;
+        background: #e74c3c;
+        position: relative;
+        cursor: pointer;
+        border-radius: 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .flap {
+        width: 0;
+        height: 0;
+        border-left: 150px solid transparent;
+        border-right: 150px solid transparent;
+        border-top: 100px solid #c0392b;
+        position: absolute;
+        top: 0;
+        transform-origin: top;
+        transition: transform 0.5s ease;
+      }
+      .logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        text-align: center;
+        z-index: 1;
+      }
+      .logo img {
+        max-width: 200px;
+        margin-bottom: 20px;
+      }
+      .download-btn {
+        display: none;
+        background: #2ecc71;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+      .envelope.open .flap {
+        transform: rotateX(180deg);
+      }
+      .envelope.open .logo {
+        opacity: 1;
+      }
+      .envelope.open .download-btn {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="envelope" id="envelope">
+      <div class="flap"></div>
+      <div class="logo" id="logo">
+        <!-- Using direct Imgur URL from your post -->
+        <img
+          src="https://i.imgur.com/kP9EYbj.png"
+          alt="Lwazi Bakes Logo"
+          id="logoImage"
+        />
+        <button class="download-btn" id="downloadBtn">Save Logo</button>
+      </div>
+    </div>
+
+    <script>
+      const envelope = document.getElementById("envelope");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const logoImage = document.getElementById("logoImage");
+
+      // Toggle envelope open/close
+      envelope.addEventListener("click", () => {
+        envelope.classList.toggle("open");
+      });
+
+      // Reliable download function
+      downloadBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+
+        try {
+          // Create a temporary canvas
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          const img = new Image();
+
+          img.crossOrigin = "Anonymous";
+          img.src = logoImage.src;
+
+          img.onload = function () {
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0);
+
+            // Create download link
+            const link = document.createElement("a");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "Lwazi-Bakes-Logo.png";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          };
+
+          img.onerror = function () {
+            // Fallback - open in new tab if download fails
+            window.open(logoImage.src, "_blank");
+          };
+        } catch (error) {
+          console.error("Download error:", error);
+          // Final fallback
+          window.open(logoImage.src, "_blank");
+        }
+      });
+    </script>
+  </body>
+</html>
